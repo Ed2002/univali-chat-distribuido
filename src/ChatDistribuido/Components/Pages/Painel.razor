@@ -1,0 +1,177 @@
+@page "/"
+@rendermode InteractiveServer
+@inject NodeService Node
+@implements IDisposable
+
+<PageTitle>Nó @Node.State.Id — Chat Distribuído</PageTitle>
+
+<nav class="topnav">
+    <span class="brand"><span class="dot"></span>Chat Distribuído</span>
+    <span class="spacer"></span>
+    <span class="node-chip">nó @Node.State.Id</span>
+</nav>
+
+<div class="shell">
+    <header class="page-head">
+        <p class="eyebrow">Painel do nó</p>
+        <h1 class="display">Nó @Node.State.Id</h1>
+        <p class="page-sub">
+            Observação em tempo real do próprio processo — ordem local de emissão, ordem
+            global de entrega, relógio vetorial, buffer e estado global.
+        </p>
+
+        <div class="pills">
+            <span class="badge lead">
+                <span class="led"></span><span class="k">líder</span>
+                <span class="v">@(Node.State.LiderAtual?.ToString() ?? "—")</span>
+            </span>
+            <span class="badge @(Node.State.EmEleicao ? "warn" : "")">
+                @if (Node.State.EmEleicao)
+                {
+                    <span class="led"></span>
+                }
+                <span class="v">@(Node.State.EmEleicao ? "eleição em curso" : "estável")</span>
+            </span>
+            <span class="badge mono">
+                <span class="k">VC</span><span class="v">[@string.Join(",", Node.State.Vc)]</span>
+            </span>
+        </div>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Enviar</h2>
+            <div class="field">
+                <label>Mensagem privada (unicast)</label>
+                <div class="row">
+                    <input class="id" type="number" @bind="_destId" min="1" aria-label="id destino" />
+                    <input class="grow" placeholder="mensagem para o nó" @bind="_msgPrivada" />
+                    <button class="btn-secondary" @onclick="EnviarUnicast">Enviar</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>Mensagem de grupo (broadcast em ordem total)</label>
+                <div class="row">
+                    <input class="grow" placeholder="mensagem para o grupo" @bind="_msgGrupo" />
+                    <button class="btn-primary" @onclick="EnviarGrupo">Difundir</button>
+                </div>
+            </div>
+            <div class="field">
+                <button class="btn-secondary" @onclick="() => Node.DispararSnapshot()">
+                    Capturar estado global
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Ordem local de emissão <span class="count">@Node.State.OrdemLocal().Count</span></h2>
+            @{ var locais = Node.State.OrdemLocal(); }
+            @if (locais.Count == 0)
+            {
+                <p class="empty">Nenhuma emissão ainda.</p>
+            }
+            else
+            {
+                <ul class="log">
+                    @foreach (var e in locais)
+                    {
+                        <li>
+                            <span class="seq">#@e.Ordem</span>
+                            <span>@e.Descricao</span>
+                            <span class="mono">@e.Vc</span>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <div class="card">
+            <h2>Ordem global de entrega <span class="count">@Node.State.OrdemGlobal().Count</span></h2>
+            @{ var globais = Node.State.OrdemGlobal(); }
+            @if (globais.Count == 0)
+            {
+                <p class="empty">Nenhuma mensagem de grupo entregue ainda.</p>
+            }
+            else
+            {
+                <table>
+                    <thead><tr><th>seq</th><th>de</th><th>conteúdo</th><th>VC</th></tr></thead>
+                    <tbody>
+                        @foreach (var g in globais)
+                        {
+                            <tr>
+                                <td class="num">@g.Seq</td>
+                                <td class="num">@g.DeOriginal</td>
+                                <td>@g.Conteudo</td>
+                                <td><span class="mono">@g.Vc</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            <p class="buffer-line">
+                Buffer (seqs pendentes):
+                <span class="mono">@(Node.State.BufferSeqs.Count == 0 ? "vazio" : string.Join(", ", Node.State.BufferSeqs))</span>
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Mensagens privadas <span class="count">@Node.State.Privadas().Count</span></h2>
+            @{ var privadas = Node.State.Privadas(); }
+            @if (privadas.Count == 0)
+            {
+                <p class="empty">Nenhuma mensagem privada.</p>
+            }
+            else
+            {
+                <ul class="log">
+                    @foreach (var p in privadas)
+                    {
+                        <li>
+                            <span class="dir @(p.Enviada ? "out" : "in")">
+                                @(p.Enviada ? $"→ {p.Para}" : $"← {p.De}")
+                            </span>
+                            <span>@p.Conteudo</span>
+                            <span class="mono">@p.Vc</span>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <div class="card wide">
+            <h2>Estado global capturado</h2>
+            <pre class="snap">@(Node.State.UltimoSnapshot ?? "Nenhum snapshot capturado ainda. Use \"Capturar estado global\" para tirar um retrato consistente do sistema (Chandy-Lamport).")</pre>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int _destId = 1;
+    private string _msgPrivada = "";
+    private string _msgGrupo = "";
+
+    protected override void OnInitialized() => Node.State.Changed += OnChanged;
+
+    private void OnChanged() => InvokeAsync(StateHasChanged);
+
+    private void EnviarUnicast()
+    {
+        if (!string.IsNullOrWhiteSpace(_msgPrivada))
+        {
+            Node.EnviarUnicast(_destId, _msgPrivada);
+            _msgPrivada = "";
+        }
+    }
+
+    private void EnviarGrupo()
+    {
+        if (!string.IsNullOrWhiteSpace(_msgGrupo))
+        {
+            Node.EnviarGrupo(_msgGrupo);
+            _msgGrupo = "";
+        }
+    }
+
+    public void Dispose() => Node.State.Changed -= OnChanged;
+}

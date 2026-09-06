@@ -1,0 +1,111 @@
+# Cluster de 15 nós. Escala escolhida por arquivo Compose, sem alterar código.
+services:
+  no1:
+    image: chat-distribuido
+    build: .
+    command: ["--id", "1", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8001:8001"
+    networks: [chat]
+    restart: unless-stopped
+  no2:
+    image: chat-distribuido
+    command: ["--id", "2", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8002:8002"
+    networks: [chat]
+    restart: unless-stopped
+  no3:
+    image: chat-distribuido
+    command: ["--id", "3", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8003:8003"
+    networks: [chat]
+    restart: unless-stopped
+  no4:
+    image: chat-distribuido
+    command: ["--id", "4", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8004:8004"
+    networks: [chat]
+    restart: unless-stopped
+  no5:
+    image: chat-distribuido
+    command: ["--id", "5", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8005:8005"
+    networks: [chat]
+    restart: unless-stopped
+  no6:
+    image: chat-distribuido
+    command: ["--id", "6", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8006:8006"
+    networks: [chat]
+    restart: unless-stopped
+  no7:
+    image: chat-distribuido
+    command: ["--id", "7", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8007:8007"
+    networks: [chat]
+    restart: unless-stopped
+  no8:
+    image: chat-distribuido
+    command: ["--id", "8", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8008:8008"
+    networks: [chat]
+    restart: unless-stopped
+  no9:
+    image: chat-distribuido
+    command: ["--id", "9", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8009:8009"
+    networks: [chat]
+    restart: unless-stopped
+  no10:
+    image: chat-distribuido
+    command: ["--id", "10", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8010:8010"
+    networks: [chat]
+    restart: unless-stopped
+  no11:
+    image: chat-distribuido
+    command: ["--id", "11", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8011:8011"
+    networks: [chat]
+    restart: unless-stopped
+  no12:
+    image: chat-distribuido
+    command: ["--id", "12", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8012:8012"
+    networks: [chat]
+    restart: unless-stopped
+  no13:
+    image: chat-distribuido
+    command: ["--id", "13", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8013:8013"
+    networks: [chat]
+    restart: unless-stopped
+  no14:
+    image: chat-distribuido
+    command: ["--id", "14", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8014:8014"
+    networks: [chat]
+    restart: unless-stopped
+  no15:
+    image: chat-distribuido
+    command: ["--id", "15", "--catalogo", "/app/nos.docker.15.json"]
+    ports:
+      - "8015:8015"
+    networks: [chat]
+    restart: unless-stopped
+networks:
+  chat:
+    driver: bridge

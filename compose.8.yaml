@@ -1,0 +1,62 @@
+# Cluster de 8 nós. Escala escolhida por arquivo Compose, sem alterar código.
+services:
+  no1:
+    image: chat-distribuido
+    build: .
+    command: ["--id", "1", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8001:8001"
+    networks: [chat]
+    restart: unless-stopped
+  no2:
+    image: chat-distribuido
+    command: ["--id", "2", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8002:8002"
+    networks: [chat]
+    restart: unless-stopped
+  no3:
+    image: chat-distribuido
+    command: ["--id", "3", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8003:8003"
+    networks: [chat]
+    restart: unless-stopped
+  no4:
+    image: chat-distribuido
+    command: ["--id", "4", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8004:8004"
+    networks: [chat]
+    restart: unless-stopped
+  no5:
+    image: chat-distribuido
+    command: ["--id", "5", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8005:8005"
+    networks: [chat]
+    restart: unless-stopped
+  no6:
+    image: chat-distribuido
+    command: ["--id", "6", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8006:8006"
+    networks: [chat]
+    restart: unless-stopped
+  no7:
+    image: chat-distribuido
+    command: ["--id", "7", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8007:8007"
+    networks: [chat]
+    restart: unless-stopped
+  no8:
+    image: chat-distribuido
+    command: ["--id", "8", "--catalogo", "/app/nos.docker.8.json"]
+    ports:
+      - "8008:8008"
+    networks: [chat]
+    restart: unless-stopped
+networks:
+  chat:
+    driver: bridge

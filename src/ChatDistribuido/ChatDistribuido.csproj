@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ChatDistribuido</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="nos.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="nos.8.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="nos.15.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
