@@ -18,6 +18,21 @@ Especificação completa em [`specs/001-chat-distribuido/`](specs/001-chat-distr
   `NodeState` (estado observável do nó).
 - **Components** (`src/ChatDistribuido/Components`) — painel Blazor Server do nó (tempo real).
 
+## Interface de chat
+
+O painel de cada nó é uma experiência de chat:
+
+- **Conversas** na lateral: "Grupo" + uma conversa privada por nó do catálogo.
+- **Grupo** — mensagens difundidas, exibidas como balões na **ordem total** (idêntica em
+  todos os nós), identificando o remetente.
+- **Conversas privadas (PV)** — mensagens diretas (unicast) aparecem **apenas** no PV do nó
+  correspondente, nunca no chat de grupo; conversas não ativas mostram indicador de não lida.
+- **Balões** do próprio nó são visualmente distintos dos recebidos.
+- **Observação técnica** (gaveta recolhível): relógio vetorial, buffer, ordem local de
+  emissão e captura de estado global — mantida conforme a constituição do projeto.
+
+Detalhes em [`specs/003-chat-bubbles-ui/`](specs/003-chat-bubbles-ui/).
+
 Endereçamento: TCP `5000 + id` (entre nós), web `8000 + id` (painel local), host `127.0.0.1`.
 
 ## Pré-requisitos

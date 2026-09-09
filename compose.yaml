@@ -1,4 +1,6 @@
-# Cluster de 3 nós. Escala escolhida por arquivo Compose, sem alterar código.
+# Cluster de 5 nós. Escala escolhida por arquivo Compose, sem alterar código.
+# IMPORTANTE: todos os serviços devem apontar para o MESMO catálogo, e ele precisa
+# listar TODOS os nós desta escala (o total define o tamanho do relógio vetorial).
 services:
   no1:
     image: chat-distribuido

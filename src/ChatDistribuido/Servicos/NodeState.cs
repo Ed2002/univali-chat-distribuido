@@ -98,6 +98,16 @@ public sealed class NodeState
         lock (_gate) return _privadas.ToList();
     }
 
+    /// <summary>
+    /// Mensagens privadas trocadas com um nó específico (par), na ordem de registro.
+    /// O par de cada registro é o destinatário se enviada, ou o remetente se recebida.
+    /// </summary>
+    public IReadOnlyList<RegistroPrivado> PrivadasCom(int peer)
+    {
+        lock (_gate)
+            return _privadas.Where(p => (p.Enviada ? p.Para : p.De) == peer).ToList();
+    }
+
     /// <summary>Último seq entregue na ordem global (0 se nada foi entregue).</summary>
     public long UltimoSeqEntregue()
     {

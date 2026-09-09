@@ -35,6 +35,9 @@ public sealed class NodeService : IDisposable
 
     public NodeState State { get; }
 
+    /// <summary>Ids dos demais nós do catálogo (exceto o próprio), para a lista de conversas.</summary>
+    public IReadOnlyList<int> OutrosNos => _catalogo.Ids.Where(x => x != _id).ToList();
+
     public NodeService(int id, CatalogoNos catalogo, IMessageChannel channel)
     {
         _id = id;

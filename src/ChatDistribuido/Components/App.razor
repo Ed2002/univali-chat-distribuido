@@ -14,6 +14,26 @@
 </head>
 <body>
     <Routes />
+
+    <!-- Modal de reconexão do Blazor Server (estilizado para o tema escuro; o framework
+         alterna as classes components-reconnect-* neste elemento). -->
+    <div id="components-reconnect-modal" data-nosnippet>
+        <div class="reconnect-box" role="alertdialog" aria-live="assertive">
+            <p class="reconnect-title">Conexão perdida</p>
+            <p class="reconnect-text reconnect-retrying">Tentando reconectar ao servidor…</p>
+            <p class="reconnect-text reconnect-failed">Falha ao reconectar. Tentando novamente…</p>
+            <p class="reconnect-text reconnect-rejected">
+                Não foi possível reconectar. <a href="" class="reload">Recarregar a página</a>.
+            </p>
+        </div>
+    </div>
+
     <script src="_framework/blazor.web.js"></script>
+    <script>
+        window.rolarParaFim = (id) => {
+            const el = document.getElementById(id);
+            if (el) el.scrollTop = el.scrollHeight;
+        };
+    </script>
 </body>
 </html>
